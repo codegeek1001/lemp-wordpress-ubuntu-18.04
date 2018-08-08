@@ -123,15 +123,15 @@ setup_wordpress() {
     rm -rf /tmp/wp_files/*
     fi
    #Downloading & Unzipping WordPress Latest Release"
-    wget https://wordpress.org/latest.zip -O /tmp/wp_files.zip;
+    wget https://wordpress.org/latest.zip -O /tmp/wordpress.zip;
     cd /tmp/;
-    unzip /tmp/wp_files.zip;
+    unzip /tmp/wordpress.zip;
 
     # Create directory for the specific $site_name
     mkdir -p $wp_site_root
 
     # copy the wp files initially downloaded at /tmp/wp_files into wp_site_root
-    mv /tmp/wp_files/* $wp_site_root
+    mv /tmp/wordpress/* $wp_site_root
 
     # setup wp-config.php file
     cp $wp_site_root/wp-config-sample.php $wp_site_root/wp-config.php
