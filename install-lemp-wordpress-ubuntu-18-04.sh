@@ -13,7 +13,7 @@ wp_dbusr=`date +%s | sha256sum | base64 | head -c 10`
 wp_dbusr_passwd=`date +%s | sha256sum | base64 | head -c 12`
 
 # save passwords in tmp password file to retrieve if needed
-$passwd_file="/root/lemp-wordpress-ubuntu-18-04-passwords.txt"
+passwd_file='/root/lemp-wordpress-ubuntu-18-04-passwords.txt'
 touch $passwd_file
 
 save_passwords_in_file() {
