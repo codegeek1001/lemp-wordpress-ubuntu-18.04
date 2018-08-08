@@ -25,6 +25,8 @@ save_passwords_in_file() {
 
 # Function to install PHP. Currently PHP 7.1
 setup_php() {
+
+    sudo add-apt-repository -y ppa:ondrej/php
     sudo apt-get update
     sudo apt-get install php7.1-fpm -y
     sudo apt-get install php7.1-cli php7.1-common php7.1-json php7.1-opcache php7.1-mysql php7.1-mbstring php7.1-mcrypt php7.1-zip php7.1-fpm php7.1-ldap php7.1-tidy php7.1-recode php7.1-curl -y
@@ -57,7 +59,7 @@ setup_nginx() {
 
     # Backup default nginx sites-available and create a new sites-available for $wp_site_name
     cp -avr /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
-    cp -avr /etc/nginx/sites-available/default /etc/nginx/sites-available/$wp_site_name
+    cp -avr /etc/nginx/sites-available/default.bak /etc/nginx/sites-available/$wp_site_name
    
    # backup existing nginx configuration file
    if [ ! -f /etc/nginx/nginx.conf.bak ]; then
