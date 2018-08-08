@@ -18,10 +18,10 @@ passwd_file='/root/lemp-wordpress-ubuntu-18-04-passwords.txt'
 touch "${passwd_file}"
 
 save_passwords_in_file() {
-    echo "mysql root password: $mysql_root_passwd" >> $passwd_file
-    echo "wordpress database user: $wp_dbusr" >> $passwd_file
-      echo "wordpress database user password: $wp_dbusr_passwd" >> $passwd_file
-    echo "wordpress database: $wp_dbname" >> $passwd_file
+    echo "mysql root password: $mysql_root_passwd" >> "${passwd_file}"
+    echo "wordpress database user: $wp_dbusr" >> "${passwd_file}"
+      echo "wordpress database user password: $wp_dbusr_passwd" >> "${passwd_file}"
+    echo "wordpress database: $wp_dbname" >> "${passwd_file}"
 }
 
 # Function to install PHP. Currently PHP 7.1
