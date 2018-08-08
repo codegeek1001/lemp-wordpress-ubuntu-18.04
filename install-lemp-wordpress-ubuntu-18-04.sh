@@ -6,6 +6,7 @@ export DEBIAN_FRONTEND=noninteractive
 # initial variables
 mysql_root_passwd=`date +%s | sha256sum | base64 | head -c 12`
 wp_site_name=$1
+wp_site_url=$2
 wp_site_root=/var/www/$wp_site_name
 wp_db_prefix=wp
 wp_dbname=`date +%s | sha256sum | base64 | head -c 8`
@@ -40,14 +41,20 @@ setup_php() {
     
 }
 
-# Install mysql. Currenly MySQL 5.7
+# Setup mysql. Currenly MySQL 5.7
 setup_mysql() {
    
+    #Install mysql
     apt-get -y install debconf-utils
     echo mysql-server mysql-server/root_password password $mysql_root_passwd | sudo debconf-set-selections
     echo mysql-server mysql-server/root_password_again password $mysql_root_passwd | sudo debconf-set-selections
     sudo apt-get -y install mysql-server mysql-client
     apt-get -y install mysql-server-5.7
+
+    # Setup mysql user for WordPress
+     /usr/bin/mysqladmin -u root -h localhost create $wp_dbname -p$mysql_root_passwd;
+    /usr/bin/mysql -uroot -p$mysql_root_passwd -e "CREATE USER $wp_dbusr@localhost IDENTIFIED BY '"$wp_dbusr_passwd"'";
+    /usr/bin/mysql -uroot -p$mysql_root_passwd -e "GRANT ALL PRIVILEGES ON $wp_dbname.* TO $wp_dbusr@localhost";
 }
 
 setup_nginx() {
@@ -87,7 +94,7 @@ setup_nginx() {
     sed -i "s/# gzip_types text\/plain/gzip_types text\/plain application\/vnd.ms\-fontobject application\/x-font-ttf font\/opentype image\/svg+xml image\/x-icon/" /etc/nginx/nginx.conf
     
     # Change localhost to wp_site_name if needed
-    if [ "$wp_site_name" != "localhost" ]; then
+    if [ "$wp_site_url" != "localhost" ]; then
     sed -i "s/listen 80 default_server;/listen 80;/" /etc/nginx/sites-available/$wp_site_name
     sed -i "s/listen \[\:\:\]\:80 default_server;/listen \[\:\:\]\:80;/" /etc/nginx/sites-available/$wp_site_name
     fi
