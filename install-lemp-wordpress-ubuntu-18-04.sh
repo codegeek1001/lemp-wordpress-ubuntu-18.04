@@ -4,14 +4,14 @@
 export DEBIAN_FRONTEND=noninteractive
 
 # initial variables
-mysql_root_passwd=`date +%s | sha256sum | base64 | head -c 12`
+mysql_root_passwd=`openssl rand -base64 12`
 wp_site_name=$1
 wp_site_url=$2
 wp_site_root=/var/www/$wp_site_name
 wp_db_prefix=wp
 wp_dbname=`date +%s | sha256sum | base64 | head -c 8`
 wp_dbusr=`date +%s | sha256sum | base64 | head -c 10`
-wp_dbusr_passwd=`date +%s | sha256sum | base64 | head -c 12`
+wp_dbusr_passwd=`openssl rand -base64 12`
 
 # save passwords in tmp password file to retrieve if needed
 passwd_file='/root/lemp-wordpress-ubuntu-18-04-passwords.txt'
