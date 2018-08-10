@@ -63,7 +63,9 @@ setup_nginx() {
     sudo apt-get update
     sudo apt-get -y install nginx
     # Adjust Firewall after Nginx is installed
-    sudo ufw allow 'Nginx HTTP'
+    sudo ufw enable
+    sudo ufw allow http
+   
 
     # Backup default nginx sites-available and create a new sites-available for $wp_site_name
     cp -avr /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
@@ -169,10 +171,11 @@ sudo add-apt-repository -y ppa:certbot/certbot
 sudo apt-get update
 sudo apt-get -y install python-certbot-nginx
 sudo certbot --nginx --email $user_email --agree-tos --noninteractive -d $wp_site_url
+ sudo ufw allow https
 }
 
 redirect_http_to_https() {
-    sed -i "s/server_name $wp_site_url;/server_name $wp_site_url;\nredirect 301 https:\/\/$wp_site_url\$request_uri/" /etc/nginx/sites-available/$wp_site_name
+    sed -i "s/server_name $wp_site_url;/server_name $wp_site_url;\nreturn 301 https:\/\/$wp_site_url\$request_uri;/" /etc/nginx/sites-available/$wp_site_name
 }
 symlink_sites_enabled() {
       sudo ln -s  /etc/nginx/sites-available/$wp_site_name /etc/nginx/sites-enabled/
