@@ -6,7 +6,8 @@ export DEBIAN_FRONTEND=noninteractive
 # initial variables
 mysql_root_passwd=`openssl rand -base64 12`
 wp_site_name=$1
-wp_site_url=$2
+wp_site_url="${2}"
+user_email=$3
 wp_site_root=/var/www/$wp_site_name
 wp_db_prefix=wp
 wp_dbname=`date +%s | sha256sum | base64 | head -c 8`
@@ -97,11 +98,13 @@ setup_nginx() {
     if [ "$wp_site_url" != "localhost" ]; then
     sed -i "s/listen 80 default_server;/listen 80;/" /etc/nginx/sites-available/$wp_site_name
     sed -i "s/listen \[\:\:\]\:80 default_server;/listen \[\:\:\]\:80;/" /etc/nginx/sites-available/$wp_site_name
+     sed -i "s/server_name _;/server_name $wp_site_url;/" /etc/nginx/sites-available/$wp_site_name
+  
     fi
 
     # setup server_name and ensure that index.php is added
     sed -i "s/try_files \$uri \$uri\/ =404;/try_files \$uri \$uri\/ \/index.php\$is_args\$args;/" /etc/nginx/sites-available/$wp_site_name
-    sed -i "s/server_name _;/server_name $wp_site_name;/" /etc/nginx/sites-available/$wp_site_name
+   
     sed -i "s/root \/var\/www\/html;/root \/var\/www\/$wp_site_name;/" /etc/nginx/sites-available/$wp_site_name
     sed -i "s/index index.html/index index.php index.html/" /etc/nginx/sites-available/$wp_site_name
 
@@ -161,6 +164,14 @@ setup_wordpress() {
 
 }
 
+install_letsencrypt_ssl() {
+    sudo apt-get update
+sudo apt-get -y install software-properties-common
+sudo add-apt-repository -y ppa:certbot/certbot
+sudo apt-get update
+sudo apt-get -y install python-certbot-nginx
+sudo certbot --nginx --email $user_email --agree-tos --noninteractive -d $wp_site_url
+}
 restart_services() {
     
     sudo systemctl restart php7.1-fpm
@@ -175,6 +186,7 @@ run() {
     setup_nginx
     setup_mysql
     setup_wordpress
+    install_letsencrypt_ssl
     restart_services
 }
 
