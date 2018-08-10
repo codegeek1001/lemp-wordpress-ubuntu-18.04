@@ -114,11 +114,9 @@ setup_nginx() {
     sed -i "s/#\tinclude snippets\/fastcgi-php.conf;/\tinclude snippets\/fastcgi-php.conf;/" /etc/nginx/sites-available/$wp_site_name
     sed -i "s/#\tfastcgi_pass unix:\/var\/run\/php\/php7.0-fpm.sock;/\tfastcgi_pass unix:\/run\/php\/php7.1-fpm.sock;\n\t\tinclude fastcgi_params;/" /etc/nginx/sites-available/$wp_site_name
     
-    # Finalize and create a info.php file to double check configuration
+   
     sed -i "s/\t#}/\t}/" /etc/nginx/sites-available/$wp_site_name
-    mv /etc/nginx/sites-available/$wp_site_name /etc/nginx/sites-enabled/$wp_site_name
-     rm -f /etc/nginx/sites-available/default
-    rm -f /etc/nginx/sites-enabled/default
+  
 
 }
 
@@ -172,6 +170,15 @@ sudo apt-get update
 sudo apt-get -y install python-certbot-nginx
 sudo certbot --nginx --email $user_email --agree-tos --noninteractive -d $wp_site_url
 }
+
+redirect_http_to_https() {
+    sed -i "s/server_name $wp_site_url;/server_name $wp_site_url;\nredirect 301 https:\/\/$wp_site_url\$request_uri/" /etc/nginx/sites-available/$wp_site_name
+}
+symlink_sites_enabled() {
+      sudo ln -s  /etc/nginx/sites-available/$wp_site_name /etc/nginx/sites-enabled/
+     rm -f /etc/nginx/sites-available/default
+    rm -f /etc/nginx/sites-enabled/default
+}
 restart_services() {
     
     sudo systemctl restart php7.1-fpm
@@ -187,6 +194,8 @@ run() {
     setup_mysql
     setup_wordpress
     install_letsencrypt_ssl
+    redirect_http_to_https
+    symlink_sites_enabled
     restart_services
 }
 
