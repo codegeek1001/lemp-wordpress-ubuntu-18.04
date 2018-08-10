@@ -63,6 +63,9 @@ setup_nginx() {
     sudo apt-get update
     sudo apt-get -y install nginx
     # Adjust Firewall after Nginx is installed
+    sudo ufw default allow outgoing
+    sudo ufw default allow incoming
+    sudo ufw allow ssh
     sudo ufw --force enable
     sudo ufw allow http
    
