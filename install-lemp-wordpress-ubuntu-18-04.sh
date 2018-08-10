@@ -182,7 +182,7 @@ redirect_http_to_https() {
 }
 
 symlink_sites_enabled() {
-      sudo ln -s  /etc/nginx/sites-available/$wp_site_name /etc/nginx/sites-enabled/
+      mv  /etc/nginx/sites-available/$wp_site_name /etc/nginx/sites-enabled/
      rm -f /etc/nginx/sites-available/default
     rm -f /etc/nginx/sites-enabled/default
 }
