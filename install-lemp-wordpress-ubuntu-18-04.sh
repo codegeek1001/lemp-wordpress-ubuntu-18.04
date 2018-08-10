@@ -179,7 +179,7 @@ sudo certbot --nginx --email $user_email --agree-tos --noninteractive -d $wp_sit
 
 redirect_http_to_https() {
     printf "skipping https redirect for now"
-   # sed -i "s/server_name $wp_site_url;/server_name $wp_site_url;\nreturn 301 https:\/\/$wp_site_url\$request_uri;/" /etc/nginx/sites-available/$wp_site_name
+  
 }
 symlink_sites_enabled() {
       sudo ln -s  /etc/nginx/sites-available/$wp_site_name /etc/nginx/sites-enabled/
