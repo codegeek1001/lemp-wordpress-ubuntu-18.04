@@ -201,8 +201,8 @@ run() {
     setup_nginx
     setup_mysql
     setup_wordpress
-    install_letsencrypt_ssl
     symlink_sites_enabled
+     install_letsencrypt_ssl
     restart_services
     add_ssl_certificate_renewal_cron
 }
