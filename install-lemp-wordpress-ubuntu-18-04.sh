@@ -173,13 +173,11 @@ sudo apt-get -y install software-properties-common
 sudo add-apt-repository -y ppa:certbot/certbot
 sudo apt-get update
 sudo apt-get -y install python-certbot-nginx
-sudo certbot --nginx --email $user_email --agree-tos --noninteractive -d $wp_site_url
+sudo certbot --nginx --email $user_email --agree-tos --noninteractive -d $wp_site_url --redirect 
  sudo ufw allow https
 }
 
-redirect_http_to_https() {
-    printf "skipping https redirect for now"
-}
+
 
 symlink_sites_enabled() {
       sudo ln -s  /etc/nginx/sites-available/$wp_site_name /etc/nginx/sites-enabled/
@@ -193,6 +191,9 @@ restart_services() {
     sudo service mysql restart
     
 }
+add_ssl_certificate_renewal_cron() {
+    (crontab -l ; echo "00 09 * * 1-5 sudo certbot renew") | crontab
+}
 
 # Function to run everything
 run() {
@@ -201,9 +202,9 @@ run() {
     setup_mysql
     setup_wordpress
     install_letsencrypt_ssl
-    redirect_http_to_https
     symlink_sites_enabled
     restart_services
+    add_ssl_certificate_renewal_cron
 }
 
 # Lets run it
