@@ -19,10 +19,10 @@ passwd_file='/root/lemp-wordpress-ubuntu-18-04-passwords.txt'
 touch "${passwd_file}"
 
 save_passwords_in_file() {
-    echo "mysql root password: $mysql_root_passwd" >> "${passwd_file}"
-    echo "wordpress database user: $wp_dbusr" >> "${passwd_file}"
-      echo "wordpress database user password: $wp_dbusr_passwd" >> "${passwd_file}"
-    echo "wordpress database: $wp_dbname" >> "${passwd_file}"
+    echo "mysql root password: $mysql_root_passwd"
+    echo "wordpress database user: $wp_dbusr"
+      echo "wordpress database user password: $wp_dbusr_passwd"
+    echo "wordpress database: $wp_dbname"
 }
 
 # Function to install PHP. Currently PHP 7.1
@@ -195,8 +195,14 @@ add_ssl_certificate_renewal_cron() {
     (crontab -l ; echo "00 09 * * 1-5 sudo certbot renew") | crontab
 }
 
+setup_unattended_upgrades() {
+    sudo apt update
+sudo apt install unattended-upgrades
+}
+
 # Function to run everything
 run() {
+    save_passwords_in_file
     setup_php
     setup_nginx
     setup_mysql
